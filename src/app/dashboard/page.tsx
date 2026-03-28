@@ -185,7 +185,7 @@ export default function Dashboard() {
                     <Tooltip 
                       contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
                       itemStyle={{ color: '#000', fontWeight: 'bold' }}
-                      formatter={(value: number) => [`${value} kg`, 'Weight']}
+                      formatter={(value: any) => [`₹${Number(value || 0).toFixed(2)}`, 'Value']}
                     />
                   </PieChart>
                 </ResponsiveContainer>
@@ -228,7 +228,7 @@ export default function Dashboard() {
                       cursor={{ fill: '#fff1f2' }}
                       contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
                       itemStyle={{ color: '#000', fontWeight: 'bold' }}
-                      formatter={(value: number) => [`${value} kg`, 'Weight']}
+                      formatter={(value: any) => [`${Number(value || 0).toFixed(2)} kg`, 'Weight']}
                     />
                     <Bar dataKey="value" radius={[8, 8, 0, 0]} barSize={35}>
                       {chartData.map((entry, index) => (
@@ -273,7 +273,7 @@ export default function Dashboard() {
                     <Tooltip 
                       contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
                       itemStyle={{ color: '#000', fontWeight: 'bold' }}
-                      formatter={(value: number) => [`₹${value}`, 'Earnings']}
+                      formatter={(value: any) => [`₹${Number(value || 0).toFixed(2)}`, 'Earnings']}
                     />
                     <Area 
                       type="monotone" 
