@@ -45,7 +45,7 @@ export default function ScanPage() {
         },
       };
 
-      const prompt = 'You are an AI for a waste recycling app in India. Analyze this image. Identify the primary waste material. Reply ONLY with a raw JSON object containing these keys: "material" (e.g., PET Plastic, Aluminum, Mixed Glass) and "price_per_kg" (Plastic=40, Metal=80, Glass=10). Do not include markdown formatting or backticks.';
+      const prompt = 'You are an AI for a waste recycling app in India. Analyze this image. Identify the primary waste material. Reply ONLY with a raw JSON object containing these keys: "material" (e.g., PET Plastic, Aluminum, Steel, Mixed Glass, Paper, E-Waste) and "price_per_kg". Use these exact rates: PET Plastic: 40, Aluminum: 80, Steel: 50, Mixed Glass: 10, Paper: 15, E-Waste: 150. Pick the closest matching category. Do not include markdown formatting or backticks.';
 
       const result = await model.generateContent([prompt, imagePart]);
       const response = await result.response;
@@ -56,9 +56,9 @@ export default function ScanPage() {
 
       setResult({
         material: data.material,
-        weight: 1.0,
+        weight: 0, // Reset to 0 for manual entry
         price_per_kg: data.price_per_kg,
-        value: 1.0 * data.price_per_kg,
+        value: 0,
         image: imageSrc,
       });
     } catch (error) {
@@ -202,28 +202,35 @@ export default function ScanPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="p-4 bg-gray-50 rounded-2xl border border-gray-200 focus-within:border-rose-300 transition-colors">
-                <p className="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-1">Weight (kg)</p>
+                <p className="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-1">Enter Weight (kg)</p>
                 <input
                   type="number"
                   step="0.1"
                   min="0"
-                  value={result.weight}
+                  placeholder="0.0"
+                  value={result.weight || ''}
                   onChange={handleWeightChange}
-                  className="w-full bg-transparent text-xl font-black text-black focus:outline-none"
+                  className="w-full bg-transparent text-xl font-black text-black focus:outline-none placeholder:text-gray-300"
                   autoFocus
                 />
               </div>
               <div className="p-4 bg-rose-50 rounded-2xl border border-rose-200">
-                <p className="text-[10px] text-rose-700 uppercase font-black tracking-widest mb-1">Total Value</p>
-                <p className="text-xl font-black text-rose-800 font-black">₹{result.value.toFixed(2)}</p>
+                <p className="text-[10px] text-rose-700 uppercase font-black tracking-widest mb-1">Total Value (₹)</p>
+                <p className="text-xl font-black text-black">₹{result.value.toFixed(2)}</p>
+                <p className="text-[8px] text-rose-400 font-bold uppercase mt-1">₹{result.price_per_kg}/kg</p>
               </div>
             </div>
 
             <button
               onClick={handleConfirm}
-              className="w-full bg-sage-700 hover:bg-sage-800 text-white py-5 rounded-[2rem] font-black shadow-lg shadow-sage-100 active:scale-95 transition-all flex items-center justify-center gap-3"
+              disabled={!result.weight || result.weight <= 0}
+              className={`w-full py-5 rounded-[2rem] font-black shadow-lg active:scale-95 transition-all flex items-center justify-center gap-3 ${
+                !result.weight || result.weight <= 0 
+                ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                : 'bg-sage-700 hover:bg-sage-800 text-white shadow-sage-100'
+              }`}
             >
-              <span className="text-white">Confirm & Log Data</span>
+              <span className="text-white">Save Scan & Log Data</span>
               <CheckCircle2 size={20} className="text-white" />
             </button>
           </div>
